@@ -363,7 +363,7 @@ class Main {
                     try {
                         jsFile.Version = r.version;
 
-
+ 
 
 
                         if (!fs.existsSync(targetDir)) {
