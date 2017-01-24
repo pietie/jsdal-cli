@@ -1,0 +1,36 @@
+{
+	"jsDALServerUrl": "http://localhost:9086",
+	"OutputPath": "../outputTest/jsDAL",
+	"ProjectList": [{
+		"Name": "vZero",
+		"Guid": "ab0f25d7-9bdf-4703-9ee8-33bbdecd1493",
+		"Included": true,
+		"Sources": [{
+			"Name": "MainDB",
+			"Guid": "73f4e392-d618-45f1-9174-06e70212fc13",
+			"Files": [{
+				"Filename": "General.js",
+				"Guid": "ad682c02-2e3d-4e7b-88f2-7cf54d48dbbc",
+				"Version": 1086
+			}]
+		},
+		{
+			"Name": "Spwp_MainDB",
+			"Guid": "ae7f6915-9e3e-4e53-8655-7412d62622ed",
+			"Files": [{
+				"Filename": "General.js",
+				"Guid": "de8450c1-81bd-438c-9d94-0433111946f9",
+				"Version": 882
+			}]
+		},
+		{
+			"Name": "ProgressiveWebApp",
+			"Guid": "a698cc92-1a7b-4b17-a65b-64c57475426d",
+			"Files": [{
+				"Filename": "PWA.js",
+				"Guid": "88ce9693-c950-493f-859a-7ecad2b86111",
+				"Version": 101
+			}]
+		}]
+	}]
+}
