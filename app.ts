@@ -9,7 +9,7 @@ import * as shelljs from 'shelljs';
 import { jsDALServerApi, IApiResponse } from './jsDALServerApi';
 
 import { JsDALConfig, JsDALProject, JsDALDbSource, JsDALFile } from './jsdal-config';
- // git test
+ // git test 2
 
 const log = console.log;
 
