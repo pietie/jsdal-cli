@@ -61,4 +61,4 @@ var JsDALDbSource = (function () {
     return JsDALDbSource;
 }());
 exports.JsDALDbSource = JsDALDbSource;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/jsdal-config/JsDALDbSource.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALDbSource.js.map

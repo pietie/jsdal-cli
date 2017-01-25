@@ -49,4 +49,4 @@ var JsDALProject = (function () {
     return JsDALProject;
 }());
 exports.JsDALProject = JsDALProject;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/jsdal-config/JsDALProject.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALProject.js.map

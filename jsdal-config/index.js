@@ -6,4 +6,4 @@ __export(require("./JsDALConfig"));
 __export(require("./JsDALProject"));
 __export(require("./JsDALDbSource"));
 __export(require("./JsDALFile"));
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/jsdal-config/index.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/index.js.map

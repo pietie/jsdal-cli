@@ -42,6 +42,7 @@ var chalk = require("chalk");
 var shelljs = require("shelljs");
 var jsDALServerApi_1 = require("./jsDALServerApi");
 var jsdal_config_1 = require("./jsdal-config");
+// git test 2
 var log = console.log;
 if (typeof String.prototype.padLeft !== 'function') {
     (function (String, Array, ceil) {
@@ -277,13 +278,14 @@ var Main = (function () {
                             }
                         }
                         fs.writeFileSync(targetFilePath_1, r.data, 'utf8');
-                        console.log(chalk.green("\tOutput file written %s (%s bytes) and version %s"), path.relative('./', targetFilePath_1), r.data.length, r.version);
+                        var prefix_1 = chalk.bgCyan.black(dbSource.Name) + "\t";
+                        console.log(prefix_1 + chalk.green("\tFile written %s (%s bytes) and version %s"), path.relative('./', targetFilePath_1), r.data.length, r.version);
                         // TODO: move into separate function?
                         jsDALServerApi_1.jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(function (r) {
                             if (r.data) {
                                 var tsdFilePath = path.join(targetDir_1, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
                                 fs.writeFileSync(tsdFilePath, r.data, 'utf8');
-                                console.log(chalk.green("\tOutput file written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
+                                console.log(prefix_1 + chalk.green("\tFile written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
                             }
                         });
                     }
@@ -377,4 +379,4 @@ catch (e) {
 // on Monitor
 //      -> check for DB source changes
 //      -> check for jsFile changes
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/app.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/app.js.map

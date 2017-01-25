@@ -15,4 +15,4 @@ var JsDALFile = (function () {
     return JsDALFile;
 }());
 exports.JsDALFile = JsDALFile;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/jsdal-config/JsDALFile.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALFile.js.map

@@ -363,9 +363,6 @@ class Main {
                     try {
                         jsFile.Version = r.version;
 
- 
-
-
                         if (!fs.existsSync(targetDir)) {
 
                             try {
@@ -377,19 +374,21 @@ class Main {
                         }
 
                         fs.writeFileSync(targetFilePath, r.data, 'utf8');
-                        console.log(chalk.green("\tOutput file written %s (%s bytes) and version %s"), path.relative('./', targetFilePath), r.data.length, r.version);
+                         
+                        let prefix:string = `${chalk.bgCyan.black(dbSource.Name)}\t`;
+                        console.log(prefix + chalk.green("\tFile written %s (%s bytes) and version %s"), path.relative('./', targetFilePath), r.data.length, r.version);
 
                         // TODO: move into separate function?
                         jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(r => {
                             if (r.data) {
                                 let tsdFilePath = path.join(targetDir, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
                                 fs.writeFileSync(tsdFilePath, r.data, 'utf8');
-                                console.log(chalk.green("\tOutput file written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
+                                console.log(prefix + chalk.green("\tFile written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
                                 // File.WriteAllBytes(tsdFilePath, tsd);
                                 // SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdFilePath).Name, tsd.Length);
                             }
 
-                        });
+                        }); 
 
 /* TODO: Consider whether or not we actually need tsdCommon if the intent is to serve it with l2-lib!
                         var tsdCommonFilePath = Path.Combine(targetDir, "jsDAL.common.d.ts");

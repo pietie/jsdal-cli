@@ -125,4 +125,4 @@ var jsDALServerApi = (function () {
     return jsDALServerApi;
 }());
 exports.jsDALServerApi = jsDALServerApi;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal/jsDALServerApi.js.map
+//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsDALServerApi.js.map
