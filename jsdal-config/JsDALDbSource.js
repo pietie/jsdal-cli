@@ -1,6 +1,7 @@
 "use strict";
 var chalk = require("chalk");
 var JsDALFile_1 = require("./JsDALFile");
+var Util_1 = require("../Util");
 var JsDALDbSource = (function () {
     function JsDALDbSource() {
     }
@@ -34,7 +35,8 @@ var JsDALDbSource = (function () {
             return;
         if (!this.JsFiles)
             this.JsFiles = [];
-        var dbSourceName = "\t" + chalk.bgCyan.black(dbSource.Name.padRight(5, " "));
+        var dbSourceName = "\t"
+            + chalk.bgCyan.black(Util_1.Util.padRight(dbSource.Name, 15));
         var curCnt = this.JsFiles.length;
         var curFiles = this.JsFiles.map(function (e) { return e.Filename; }).join(",");
         // remove current JS Files that do not exist in new list
@@ -44,13 +46,13 @@ var JsDALDbSource = (function () {
         // add all new Js Files
         newFiles = newFiles.filter(function (newSrc) { return _this.JsFiles.find(function (existing) { return existing.Guid == newSrc.Guid; }) == null; });
         if (newFiles.length > 0 || toRemove.length > 0) {
-            console.log(dbSourceName + chalk.gray("\tCUR files (" + curCnt + "): ") + curFiles);
+            console.log(dbSourceName + chalk.gray("CUR files (" + curCnt + "): ") + curFiles);
         }
         if (newFiles.length > 0) {
-            console.log(dbSourceName + chalk.green("\tADD files (" + newFiles.length + "): ") + newFiles.map(function (e) { return e.Filename; }).join(","));
+            console.log(dbSourceName + chalk.green("ADD files (" + newFiles.length + "): ") + newFiles.map(function (e) { return e.Filename; }).join(","));
         }
         if (toRemove.length > 0) {
-            console.log(dbSourceName + chalk.red("\tREM files (" + toRemove.length + "): ") + toRemove.map(function (e) { return e.Filename; }).join(","));
+            console.log(dbSourceName + chalk.red("REM files (" + toRemove.length + "): ") + toRemove.map(function (e) { return e.Filename; }).join(","));
         }
         if (toRemove.length > 0 || newFiles.length > 0) {
             // add extra newline at the end if there was any output above

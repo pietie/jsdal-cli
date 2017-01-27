@@ -3,6 +3,8 @@ import * as chalk from 'chalk';
 import { JsDALFile } from './JsDALFile'
 import { ISerializable } from '../ISerializable'
 
+import { Util  } from '../Util'
+
 
 export class JsDALDbSource implements ISerializable<JsDALDbSource> {
     Name: string;
@@ -51,7 +53,8 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
         if (!newFiles) return;
         if (!this.JsFiles) this.JsFiles = [];
 
-        let dbSourceName: string = "\t" + chalk.bgCyan.black((<any>dbSource.Name).padRight(5, " "));
+        let dbSourceName: string = "\t" 
+                + chalk.bgCyan.black(Util.padRight(dbSource.Name, 15));
 
         let curCnt = this.JsFiles.length;
         let curFiles = this.JsFiles.map(e => e.Filename).join(",");
@@ -66,15 +69,15 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
         newFiles = newFiles.filter(newSrc => this.JsFiles.find(existing => existing.Guid == newSrc.Guid) == null);
 
         if (newFiles.length > 0 || toRemove.length > 0) {
-            console.log(dbSourceName + chalk.gray(`\tCUR files (${curCnt}): `) + curFiles);
+            console.log(dbSourceName + chalk.gray(`CUR files (${curCnt}): `) + curFiles);
         }
 
         if (newFiles.length > 0) {
-            console.log(dbSourceName + chalk.green(`\tADD files (${newFiles.length}): `) + newFiles.map(e => e.Filename).join(","));
+            console.log(dbSourceName + chalk.green(`ADD files (${newFiles.length}): `) + newFiles.map(e => e.Filename).join(","));
         }
 
         if (toRemove.length > 0) {
-            console.log(dbSourceName + chalk.red(`\tREM files (${toRemove.length}): `) + toRemove.map(e => e.Filename).join(","));
+            console.log(dbSourceName + chalk.red(`REM files (${toRemove.length}): `) + toRemove.map(e => e.Filename).join(","));
         }
         if (toRemove.length > 0 || newFiles.length > 0) {
             // add extra newline at the end if there was any output above
