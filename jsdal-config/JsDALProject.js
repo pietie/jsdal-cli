@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var chalk = require("chalk");
 var JsDALDbSource_1 = require("./JsDALDbSource");
 var Util_1 = require("../Util");
@@ -50,4 +51,4 @@ var JsDALProject = (function () {
     return JsDALProject;
 }());
 exports.JsDALProject = JsDALProject;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALProject.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALProject.js.map

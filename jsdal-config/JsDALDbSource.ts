@@ -86,6 +86,5 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
 
 
         this.JsFiles = this.JsFiles.concat(newFiles);
-
     }
 }

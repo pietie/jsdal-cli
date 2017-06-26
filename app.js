@@ -1,14 +1,7 @@
 #! /usr/bin/env node
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var commander = require("commander");
-var inquirer = require("inquirer");
-var clui = require("clui");
-//import * as http from 'http';
-//import * as path from 'path';
-//import * as fs from 'fs';
-//import * as crypto from 'crypto'
-//import * as async from 'async';
-var chalk = require("chalk");
 //import * as shelljs from 'shelljs';
 //import { JsDALConfig  } from './jsdal-config';
 var main_1 = require("./main");
@@ -27,96 +20,94 @@ program
     console.log('TODO - INIT!');
     // this config can host the check timeouts (check every (x) seconds ...)
 });
-var outputBuffer = new clui.LineBuffer({
-    x: 0,
-    y: 0,
-    width: 'console',
-    height: 'console'
-});
-var headers = new clui.Line(outputBuffer)
-    .padding(2)
-    .column(chalk.red('Column One'), 20)
-    .column('Column Two', 20)
-    .column('Column Three', 20)
-    .column('Column Four', 20)
-    .fill()
-    .store();
-var line;
-for (var l = 0; l < 20; l++) {
-    line = new clui.Line(outputBuffer)
-        .column("AaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbaaaZ", 20)
-        .column((Math.random() * 100).toFixed(3), 20)
-        .column((Math.random() * 100).toFixed(3), 20)
-        .column((Math.random() * 100).toFixed(3), 11)
-        .fill()
-        .store();
-}
-outputBuffer.output();
-var questions = [
-    {
-        name: 'username',
-        type: 'input',
-        message: 'Enter your Github username or e-mail address:',
-        validate: function (value) {
-            if (value.length) {
-                return true;
-            }
-            else {
-                return 'Please enter your username or e-mail address';
-            }
-        }
-    },
-    {
-        name: 'password',
-        type: 'password',
-        message: 'Enter your password:',
-        validate: function (value) {
-            if (value.length) {
-                return true;
-            }
-            else {
-                return 'Please enter your password';
-            }
-        }
-    }
-];
+// var outputBuffer = new clui.LineBuffer({
+//     x: 0,
+//     y: 0,
+//     width: 'console',
+//     height: 'console'
+// });
+// var headers = new clui.Line(outputBuffer)
+//     .padding(2)
+//     .column(chalk.red('Column One'), 20)
+//     .column('Column Two', 20)
+//     .column('Column Three', 20)
+//     .column('Column Four', 20)
+//     .fill()
+//     .store();
+// var line;
+// for (var l = 0; l < 20; l++) {
+//     line = new clui.Line(outputBuffer)
+//         .column("AaaaaaabbbbbbbbbbbbbbbbbbbbbbbbbbbaaaZ", 20)
+//         .column((Math.random() * 100).toFixed(3), 20)
+//         .column((Math.random() * 100).toFixed(3), 20)
+//         .column((Math.random() * 100).toFixed(3), 11)
+//         .fill()
+//         .store();
+// }
+// outputBuffer.output();
+// var questions = [
+//     {
+//         name: 'username',
+//         type: 'input',
+//         message: 'Enter your Github username or e-mail address:',
+//         validate: function (value) {
+//             if (value.length) {
+//                 return true;
+//             } else {
+//                 return 'Please enter your username or e-mail address';
+//             }
+//         }
+//     },
+//     {
+//         name: 'password',
+//         type: 'password',
+//         message: 'Enter your password:',
+//         validate: function (value) {
+//             if (value.length) {
+//                 return true;
+//             } else {
+//                 return 'Please enter your password';
+//             }
+//         }
+//     }
+// ];
 /*
 inquirer.prompt(questions).then(() => {
     console.dir(arguments);
 
 });*/
-inquirer.prompt([
-    {
-        type: 'expand',
-        message: 'Conflict on `file.js`: ',
-        name: 'overwrite',
-        choices: [
-            {
-                key: 'y',
-                name: 'Overwrite',
-                value: 'overwrite'
-            },
-            {
-                key: 'a',
-                name: 'Overwrite this one and all next',
-                value: 'overwrite_all'
-            },
-            {
-                key: 'd',
-                name: 'Show diff',
-                value: 'diff'
-            },
-            new inquirer.Separator(),
-            {
-                key: 'x',
-                name: 'Abort',
-                value: 'abort'
-            }
-        ]
-    }
-]).then(function (answers) {
-    console.log(JSON.stringify(answers, null, '  '));
-});
+// inquirer.prompt([
+//   {
+//     type: 'expand',
+//     message: 'Conflict on `file.js`: ',
+//     name: 'overwrite',
+//     choices: [
+//       {
+//         key: 'y',
+//         name: 'Overwrite',
+//         value: 'overwrite'
+//       },
+//       {
+//         key: 'a',
+//         name: 'Overwrite this one and all next',
+//         value: 'overwrite_all'
+//       },
+//       {
+//         key: 'd',
+//         name: 'Show diff',
+//         value: 'diff'
+//       },
+//       new inquirer.Separator(),
+//       {
+//         key: 'x',
+//         name: 'Abort',
+//         value: 'abort'
+//       }
+//     ]
+//   }
+// ]).then(function (answers) {
+//   console.log(JSON.stringify(answers, null, '  '));
+// });
 //return;
 /*
     command/option ideas
@@ -158,4 +149,4 @@ try {
 catch (e) {
     console.error(e);
 }
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/app.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/app.js.map

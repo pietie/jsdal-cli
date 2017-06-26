@@ -75,7 +75,17 @@ export class Main {
 
             this.configs = await this.enumerateJsDalFiles();
 
+            // TODO: Retrieve project list from server!!!?
+
+
+
             async.forEach(this.configs, (conf: JsDALConfig) => {
+
+                jsDALServerApi.getProjects(conf.jsDALServerUrl).then(r => {
+                    // TODO: update config from here
+                    console.info("RESP!!!", r.data);
+                });
+
                 setInterval(() => {
                     // TODO: setInterval is a bad idea
                     this.processConfig(conf);
@@ -93,7 +103,9 @@ export class Main {
 
 
     private processConfig(conf: JsDALConfig) {
-        //    console.log("\t\t!!!\t",conf.ProjectList,"\r\n\r\n");
+
+        // clear the screen
+        //!process.stdout.write('\x1B[2J\x1B[0f');
 
         async.forEach(conf.ProjectList, async (project: JsDALProject) => {
             //console.log(chalk.bold.italic.underline.white(`${project.Name} (${project.Guid})`));
@@ -104,7 +116,7 @@ export class Main {
             ///////////////////////////////////////
             // Check for new or deleted DB sources
             {
-                await jsDALServerApi.GetDbSourcesOnly(conf.jsDALServerUrl, project.Guid).then((r: IApiResponse) => {
+                await jsDALServerApi.GetDbSourcesOnly(conf.jsDALServerUrl, project.Guid).then(r => {
 
                     if (r.statusCode == 404/*NOT FOUND*/) {
                         // TODO: Project not found, remove?
@@ -115,7 +127,16 @@ export class Main {
 
                     project.updateFrom(dbSourceObjects);
 
-                }).catch(e => console.log(e.toString()));
+                }).catch(e => {
+                    if (e.code == 'ECONNREFUSED') {
+                        console.info("Failed to connect!", conf.jsDALServerUrl);
+                    }
+                    else {
+                        console.dir(e);
+                        console.log("***" + e.toString());
+                    }
+
+                });
             }
 
             /////////////////////////////////////////////
@@ -139,7 +160,11 @@ export class Main {
             // Check output files for version changes
             {
                 if (conf.OutputPath) {
-                    conf.ProjectList.forEach(p => { p.Sources.forEach(dbSource => { this.processJsFiles(conf, p, dbSource); }) });
+                    conf.ProjectList.forEach(p => {
+                        p.Sources.forEach(dbSource => {
+                            this.processJsFiles(conf, p, dbSource);
+                        })
+                    });
                 }
             }
 
@@ -169,7 +194,7 @@ export class Main {
             //! RoutineCacheStore.Instance.UpdateDbSource(this.Config.jsDALServerUrl, source.Guid);
 
             // fetch list of output files from jsDAL Server
-            await jsDALServerApi.GetOutputFiles(config.jsDALServerUrl, source.Guid).then((r: IApiResponse) => {
+            await jsDALServerApi.GetOutputFiles(config.jsDALServerUrl, source.Guid).then((r: IApiResponse<any>) => {
 
                 if (r.statusCode == 404/*NOT FOUND*/) {
                     // DB Source not found and is no longer valid
@@ -319,7 +344,7 @@ export class Main {
 
                         fs.writeFileSync(targetFilePath, r.data, 'utf8');
 
-                        let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name,15))}`;
+                        let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 15))}`;
                         console.log(prefix + chalk.green("File written %s (%s bytes) and version %s"), path.relative('./', targetFilePath), r.data.length, r.version);
 
                         // TODO: move into separate function?
@@ -332,14 +357,18 @@ export class Main {
 
                         });
 
-                        /* TODO: Consider whether or not we actually need tsdCommon if the intent is to serve it with l2-lib!
-                                                var tsdCommonFilePath = Path.Combine(targetDir, "jsDAL.common.d.ts");
-                        
-                                                if (!File.Exists(tsdCommonFilePath) || new FileInfo(tsdCommonFilePath).Length == 0) {
-                                                    var tsdCommon = jsDALServerApi.DownloadCommonTypeScriptDefinitions(this.Config.jsDALServerUrl);
-                                                    File.WriteAllBytes(tsdCommonFilePath, tsdCommon);
-                                                    SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdCommonFilePath).Name, tsdCommon.Length);
-                                                }*/
+
+                        let tsdCommonFilePath = path.join(targetDir, "jsDAL.common.d.ts");
+
+                        if (!fs.existsSync(tsdCommonFilePath) || fs.statSync(tsdCommonFilePath).size == 0) {
+                            jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then((tsdCommon:string) => {
+
+                                fs.writeFileSync(tsdCommonFilePath, tsdCommon, 'utf8');
+
+                                console.log(prefix + `Output file written: \"${path.parse(tsdCommonFilePath).name}\" (${tsdCommon.length} bytes)`);
+                                //!SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdCommonFilePath).Name, tsdCommon.Length);
+                            });
+                        }
 
 
 
@@ -353,7 +382,7 @@ export class Main {
                         return;
                     }
                     else if (err.statusCode == 404/*NotFound*/) {
-                        console.log("TODO: jsFile not found..clean up local stores!..delete file etc");
+                        console.log("TODO: jsFile not found..clean up local stores!..delete file etc", err);
 
                         return;
                     }
@@ -362,7 +391,7 @@ export class Main {
                         return;
                     }
                     else {
-                        console.log("!!!error!, statusCode: ", err.statusCode);
+                        console.log("!!!error!, statusCode: ", err);
                     }
 
                 });

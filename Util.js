@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var Util = (function () {
     function Util() {
     }
@@ -13,4 +14,4 @@ var Util = (function () {
     return Util;
 }());
 exports.Util = Util;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/Util.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/Util.js.map

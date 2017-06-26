@@ -1,4 +1,5 @@
 "use strict";
+Object.defineProperty(exports, "__esModule", { value: true });
 var JsDALProject_1 = require("./JsDALProject");
 var JsDALConfig = (function () {
     function JsDALConfig() {
@@ -18,4 +19,4 @@ var JsDALConfig = (function () {
     return JsDALConfig;
 }());
 exports.JsDALConfig = JsDALConfig;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALConfig.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALConfig.js.map

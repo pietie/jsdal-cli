@@ -7,6 +7,7 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
     }
     return t;
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var http = require("http");
 var URL = require("url");
 var jsDALServerApi = (function () {
@@ -52,37 +53,14 @@ var jsDALServerApi = (function () {
             req.end();
         });
     };
+    jsDALServerApi.getProjects = function (serverUrl) {
+        return jsDALServerApi.fetchFromApi(serverUrl, "/api/jsdal/projects");
+    };
     jsDALServerApi.GetDbSourcesOnly = function (serverUrl, projectGuid) {
         return jsDALServerApi.fetchFromApi(serverUrl, "/api/jsdal/dbsources?projectGuid=" + projectGuid);
     };
     jsDALServerApi.GetOutputFiles = function (serverUrl, dbSourceGuid) {
         return jsDALServerApi.fetchFromApi(serverUrl, "/api/jsdal/files?dbSourceGuid=" + dbSourceGuid);
-        //         try {
-        //             var wc = CreateWebClient();
-        //             var t = wc.DownloadStringTaskAsync(string.Format("{0}/api/jsdal/files?dbSourceGuid={1}", jsDALServerUrl, dbSourceGuid));
-        //             if (t.Wait(1000 * 60, cancellationToken)) {
-        //                 return JsonConvert.DeserializeObject<List<JsFile>>(t.Result);
-        //             }
-        //             else return null;
-        //         }
-        //         catch (Exception ee) {
-        //             if (ee.InnerException is WebException)
-        //             {
-        //                 WebException we = (WebException)ee.InnerException;
-        //                 var resp = (System.Net.HttpWebResponse)we.Response;
-        //                 if (resp ?.StatusCode == HttpStatusCode.NotFound)
-        //                 {
-        //                     dbSourceNotFound = true;
-        //                     return null;
-        //                 }
-        //                 throw;
-        //             }
-        //                 else
-        //                 {
-        //     throw;
-        // }
-        //             }
-        //         }
     };
     jsDALServerApi.DownloadJsFile = function (serverUrl, jsFileGuid, version, minified, etag) {
         var headers = {};
@@ -122,7 +100,10 @@ var jsDALServerApi = (function () {
             });
         });
     };
+    jsDALServerApi.DownloadCommonTypeScriptDefinitions = function (serverUrl) {
+        return jsDALServerApi.fetchFromApi(serverUrl, "/api/tsd/common", 'GET', false).then(function (r) { return r.data; });
+    };
     return jsDALServerApi;
 }());
 exports.jsDALServerApi = jsDALServerApi;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsDALServerApi.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsDALServerApi.js.map

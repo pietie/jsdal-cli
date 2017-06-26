@@ -4,12 +4,12 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
         function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
         function step(result) { result.done ? resolve(result.value) : new P(function (resolve) { resolve(result.value); }).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments)).next());
+        step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
 var __generator = (this && this.__generator) || function (thisArg, body) {
-    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t;
-    return { next: verb(0), "throw": verb(1), "return": verb(2) };
+    var _ = { label: 0, sent: function() { if (t[0] & 1) throw t[1]; return t[1]; }, trys: [], ops: [] }, f, y, t, g;
+    return g = { next: verb(0), "throw": verb(1), "return": verb(2) }, typeof Symbol === "function" && (g[Symbol.iterator] = function() { return this; }), g;
     function verb(n) { return function (v) { return step([n, v]); }; }
     function step(op) {
         if (f) throw new TypeError("Generator is already executing.");
@@ -34,6 +34,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
         if (op[0] & 5) throw op[1]; return { value: op[0] ? op[1] : void 0, done: true };
     }
 };
+Object.defineProperty(exports, "__esModule", { value: true });
 var jsDALServerApi_1 = require("./jsDALServerApi");
 var jsdal_config_1 = require("./jsdal-config");
 var path = require("path");
@@ -101,7 +102,12 @@ var Main = (function () {
                         return [4 /*yield*/, this.enumerateJsDalFiles()];
                     case 1:
                         _a.configs = _b.sent();
+                        // TODO: Retrieve project list from server!!!?
                         async.forEach(this.configs, function (conf) {
+                            jsDALServerApi_1.jsDALServerApi.getProjects(conf.jsDALServerUrl).then(function (r) {
+                                // TODO: update config from here
+                                console.info("RESP!!!", r.data);
+                            });
                             setInterval(function () {
                                 // TODO: setInterval is a bad idea
                                 _this.processConfig(conf);
@@ -118,7 +124,8 @@ var Main = (function () {
         });
     };
     Main.prototype.processConfig = function (conf) {
-        //    console.log("\t\t!!!\t",conf.ProjectList,"\r\n\r\n");
+        // clear the screen
+        //!process.stdout.write('\x1B[2J\x1B[0f');
         var _this = this;
         async.forEach(conf.ProjectList, function (project) { return __awaiter(_this, void 0, void 0, function () {
             var _this = this;
@@ -131,7 +138,15 @@ var Main = (function () {
                             }
                             var dbSourceObjects = jsdal_config_1.JsDALDbSource.deserialize(r.data);
                             project.updateFrom(dbSourceObjects);
-                        }).catch(function (e) { return console.log(e.toString()); })];
+                        }).catch(function (e) {
+                            if (e.code == 'ECONNREFUSED') {
+                                console.info("Failed to connect!", conf.jsDALServerUrl);
+                            }
+                            else {
+                                console.dir(e);
+                                console.log("***" + e.toString());
+                            }
+                        })];
                     case 1:
                         _a.sent();
                         /////////////////////////////////////////////
@@ -160,7 +175,11 @@ var Main = (function () {
                         // Check output files for version changes
                         {
                             if (conf.OutputPath) {
-                                conf.ProjectList.forEach(function (p) { p.Sources.forEach(function (dbSource) { _this.processJsFiles(conf, p, dbSource); }); });
+                                conf.ProjectList.forEach(function (p) {
+                                    p.Sources.forEach(function (dbSource) {
+                                        _this.processJsFiles(conf, p, dbSource);
+                                    });
+                                });
                             }
                         }
                         return [2 /*return*/];
@@ -238,6 +257,14 @@ var Main = (function () {
                                 console.log(prefix_1 + chalk.green("File written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
                             }
                         });
+                        var tsdCommonFilePath_1 = path.join(targetDir_1, "jsDAL.common.d.ts");
+                        if (!fs.existsSync(tsdCommonFilePath_1) || fs.statSync(tsdCommonFilePath_1).size == 0) {
+                            jsDALServerApi_1.jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then(function (tsdCommon) {
+                                fs.writeFileSync(tsdCommonFilePath_1, tsdCommon, 'utf8');
+                                console.log(prefix_1 + ("Output file written: \"" + path.parse(tsdCommonFilePath_1).name + "\" (" + tsdCommon.length + " bytes)"));
+                                //!SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdCommonFilePath).Name, tsdCommon.Length);
+                            });
+                        }
                     }
                     catch (e) {
                         console.log("\twrite failed!", e.toString());
@@ -248,7 +275,7 @@ var Main = (function () {
                         return;
                     }
                     else if (err.statusCode == 404 /*NotFound*/) {
-                        console.log("TODO: jsFile not found..clean up local stores!..delete file etc");
+                        console.log("TODO: jsFile not found..clean up local stores!..delete file etc", err);
                         return;
                     }
                     else if (err.statusCode == 412 /*PreconditionFailed*/) {
@@ -256,7 +283,7 @@ var Main = (function () {
                         return;
                     }
                     else {
-                        console.log("!!!error!, statusCode: ", err.statusCode);
+                        console.log("!!!error!, statusCode: ", err);
                     }
                 });
             }
@@ -318,4 +345,4 @@ var Main = (function () {
     return Main;
 }());
 exports.Main = Main;
-//# sourceMappingURL=d:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/main.js.map
+//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/main.js.map
