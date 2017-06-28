@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 var chalk = require("chalk");
 var JsDALFile_1 = require("./JsDALFile");
 var Util_1 = require("../Util");
+var console_logger_1 = require("./../console-logger");
 var JsDALDbSource = (function () {
     function JsDALDbSource() {
     }
@@ -37,7 +38,7 @@ var JsDALDbSource = (function () {
         if (!this.JsFiles)
             this.JsFiles = [];
         var dbSourceName = "\t"
-            + chalk.bgCyan.black(Util_1.Util.padRight(dbSource.Name, 15));
+            + chalk.bgCyan.black(Util_1.Util.padRight(dbSource.Name, 20));
         var curCnt = this.JsFiles.length;
         var curFiles = this.JsFiles.map(function (e) { return e.Filename; }).join(",");
         // remove current JS Files that do not exist in new list
@@ -47,17 +48,17 @@ var JsDALDbSource = (function () {
         // add all new Js Files
         newFiles = newFiles.filter(function (newSrc) { return _this.JsFiles.find(function (existing) { return existing.Guid == newSrc.Guid; }) == null; });
         if (newFiles.length > 0 || toRemove.length > 0) {
-            console.log(dbSourceName + chalk.gray("CUR files (" + curCnt + "): ") + curFiles);
+            console_logger_1.ConsoleLog.logExpireBy(dbSourceName + chalk.gray("CUR files (" + curCnt + "): ") + curFiles, 0.3);
         }
         if (newFiles.length > 0) {
-            console.log(dbSourceName + chalk.green("ADD files (" + newFiles.length + "): ") + newFiles.map(function (e) { return e.Filename; }).join(","));
+            console_logger_1.ConsoleLog.logExpireBy(dbSourceName + chalk.green("ADD files (" + newFiles.length + "): ") + newFiles.map(function (e) { return e.Filename; }).join(","), 0.3);
         }
         if (toRemove.length > 0) {
-            console.log(dbSourceName + chalk.red("REM files (" + toRemove.length + "): ") + toRemove.map(function (e) { return e.Filename; }).join(","));
+            console_logger_1.ConsoleLog.logExpireBy(dbSourceName + chalk.red("REM files (" + toRemove.length + "): ") + toRemove.map(function (e) { return e.Filename; }).join(","), 0.3);
         }
         if (toRemove.length > 0 || newFiles.length > 0) {
             // add extra newline at the end if there was any output above
-            console.log("");
+            //console.log("");
         }
         this.JsFiles = this.JsFiles.concat(newFiles);
     };

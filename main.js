@@ -37,6 +37,7 @@ var __generator = (this && this.__generator) || function (thisArg, body) {
 Object.defineProperty(exports, "__esModule", { value: true });
 var jsDALServerApi_1 = require("./jsDALServerApi");
 var jsdal_config_1 = require("./jsdal-config");
+var console_logger_1 = require("./console-logger");
 var path = require("path");
 var fs = require("fs");
 var crypto = require("crypto");
@@ -68,13 +69,13 @@ var Main = (function () {
                             configs = [];
                             fs.readdir(folder, function (err, files) {
                                 var jsDALFiles = files.filter(function (f) { return f.endsWith(".jsDAL"); });
-                                console.log(chalk.grey("Found (" + jsDALFiles.length + ") .jsDAL file(s) in the current directory."));
+                                console_logger_1.ConsoleLog.log(chalk.grey("Found (" + jsDALFiles.length + ") .jsDAL file(s) in the current directory."));
                                 jsDALFiles.forEach(function (filePath) {
                                     try {
                                         var data = fs.readFileSync(filePath, "utf8");
                                         var config = new jsdal_config_1.JsDALConfig().deserialize(JSON.parse(data));
                                         config.ConfigFilePath = path.resolve(filePath);
-                                        console.log("\t" + chalk.green(filePath) + " (" + chalk.bgWhite.blue(config.jsDALServerUrl) + ")");
+                                        console_logger_1.ConsoleLog.addProject(filePath, config);
                                         configs.push(config);
                                     }
                                     catch (e) {
@@ -124,9 +125,9 @@ var Main = (function () {
         });
     };
     Main.prototype.processConfig = function (conf) {
-        // clear the screen
-        //!process.stdout.write('\x1B[2J\x1B[0f');
+        //        ConsoleLog.log((new Date()).toISOString());
         var _this = this;
+        console_logger_1.ConsoleLog.output();
         async.forEach(conf.ProjectList, function (project) { return __awaiter(_this, void 0, void 0, function () {
             var _this = this;
             return __generator(this, function (_a) {
@@ -247,27 +248,27 @@ var Main = (function () {
                             }
                         }
                         fs.writeFileSync(targetFilePath_1, r.data, 'utf8');
-                        var prefix_1 = "" + chalk.bgCyan.black(util_1.Util.padRight(dbSource.Name, 15));
-                        console.log(prefix_1 + chalk.green("File written %s (%s bytes) and version %s"), path.relative('./', targetFilePath_1), r.data.length, r.version);
+                        var prefix_1 = "" + chalk.bgCyan.black(util_1.Util.padRight(dbSource.Name, 20));
+                        console_logger_1.ConsoleLog.log(prefix_1 + chalk.green("File written " + path.relative('./', targetFilePath_1) + " (" + r.data.length + " bytes) and version " + r.version));
                         // TODO: move into separate function?
                         jsDALServerApi_1.jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(function (r) {
                             if (r.data) {
                                 var tsdFilePath = path.join(targetDir_1, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
                                 fs.writeFileSync(tsdFilePath, r.data, 'utf8');
-                                console.log(prefix_1 + chalk.green("File written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
+                                console_logger_1.ConsoleLog.log(prefix_1 + chalk.green("File written " + path.relative('./', tsdFilePath) + " (" + r.data.length + " bytes)"));
                             }
                         });
                         var tsdCommonFilePath_1 = path.join(targetDir_1, "jsDAL.common.d.ts");
                         if (!fs.existsSync(tsdCommonFilePath_1) || fs.statSync(tsdCommonFilePath_1).size == 0) {
                             jsDALServerApi_1.jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then(function (tsdCommon) {
                                 fs.writeFileSync(tsdCommonFilePath_1, tsdCommon, 'utf8');
-                                console.log(prefix_1 + ("Output file written: \"" + path.parse(tsdCommonFilePath_1).name + "\" (" + tsdCommon.length + " bytes)"));
-                                //!SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdCommonFilePath).Name, tsdCommon.Length);
+                                console_logger_1.ConsoleLog.log(prefix_1 + ("Output file written: \"" + path.parse(tsdCommonFilePath_1).name + "\" (" + tsdCommon.length + " bytes)"));
                             });
                         }
                     }
                     catch (e) {
                         console.log("\twrite failed!", e.toString());
+                        console_logger_1.ConsoleLog.log(e.toString());
                     }
                 }).catch(function (err) {
                     if (err.statusCode == 304 /*notModified*/) {
@@ -284,11 +285,13 @@ var Main = (function () {
                     }
                     else {
                         console.log("!!!error!, statusCode: ", err);
+                        console_logger_1.ConsoleLog.log(err.toString());
                     }
                 });
             }
             catch (e) {
                 console.log(chalk.red(e.toString()));
+                console_logger_1.ConsoleLog.log(e.toString());
             }
         });
         /*

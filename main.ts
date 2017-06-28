@@ -1,6 +1,8 @@
 import { jsDALServerApi, IApiResponse } from './jsDALServerApi';
 import { JsDALConfig, JsDALProject, JsDALDbSource, JsDALFile } from './jsdal-config';
 
+import { ConsoleLog } from './console-logger';
+
 
 import * as commander from 'commander';
 import * as inquirer from 'inquirer';
@@ -39,7 +41,7 @@ export class Main {
             fs.readdir(folder, (err, files) => {
                 var jsDALFiles = files.filter(f => f.endsWith(".jsDAL"));
 
-                console.log(chalk.grey(`Found (${jsDALFiles.length}) .jsDAL file(s) in the current directory.`));
+                ConsoleLog.log(chalk.grey(`Found (${jsDALFiles.length}) .jsDAL file(s) in the current directory.`));
 
                 jsDALFiles.forEach(filePath => {
 
@@ -51,7 +53,7 @@ export class Main {
 
                         config.ConfigFilePath = path.resolve(filePath);
 
-                        console.log(`\t${chalk.green(filePath)} (${chalk.bgWhite.blue(config.jsDALServerUrl)})`);
+                        ConsoleLog.addProject(filePath, config);
 
                         configs.push(config);
                     }
@@ -103,14 +105,11 @@ export class Main {
 
 
     private processConfig(conf: JsDALConfig) {
+//        ConsoleLog.log((new Date()).toISOString());
 
-        // clear the screen
-        //!process.stdout.write('\x1B[2J\x1B[0f');
+        ConsoleLog.output();
 
         async.forEach(conf.ProjectList, async (project: JsDALProject) => {
-            //console.log(chalk.bold.italic.underline.white(`${project.Name} (${project.Guid})`));
-            //console.log("¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯¯");
-
             // TODO: only do EACH section only every (x) seconds
 
             ///////////////////////////////////////
@@ -344,15 +343,15 @@ export class Main {
 
                         fs.writeFileSync(targetFilePath, r.data, 'utf8');
 
-                        let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 15))}`;
-                        console.log(prefix + chalk.green("File written %s (%s bytes) and version %s"), path.relative('./', targetFilePath), r.data.length, r.version);
+                        let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 20))}`;
+                        ConsoleLog.log(prefix + chalk.green(`File written ${path.relative('./', targetFilePath)} (${r.data.length} bytes) and version ${r.version}`));
 
                         // TODO: move into separate function?
                         jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(r => {
                             if (r.data) {
                                 let tsdFilePath = path.join(targetDir, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
                                 fs.writeFileSync(tsdFilePath, r.data, 'utf8');
-                                console.log(prefix + chalk.green("File written %s (%s bytes)"), path.relative('./', tsdFilePath), r.data.length);
+                                ConsoleLog.log(prefix + chalk.green(`File written ${path.relative('./', tsdFilePath)} (${r.data.length} bytes)`));
                             }
 
                         });
@@ -361,12 +360,12 @@ export class Main {
                         let tsdCommonFilePath = path.join(targetDir, "jsDAL.common.d.ts");
 
                         if (!fs.existsSync(tsdCommonFilePath) || fs.statSync(tsdCommonFilePath).size == 0) {
-                            jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then((tsdCommon:string) => {
+                            jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then((tsdCommon: string) => {
 
                                 fs.writeFileSync(tsdCommonFilePath, tsdCommon, 'utf8');
 
-                                console.log(prefix + `Output file written: \"${path.parse(tsdCommonFilePath).name}\" (${tsdCommon.length} bytes)`);
-                                //!SessionLog.Info("Output file written: \"{0}\" ({1} bytes)", new FileInfo(tsdCommonFilePath).Name, tsdCommon.Length);
+                                ConsoleLog.log(prefix + `Output file written: \"${path.parse(tsdCommonFilePath).name}\" (${tsdCommon.length} bytes)`);
+                                
                             });
                         }
 
@@ -375,6 +374,7 @@ export class Main {
                     }
                     catch (e) {
                         console.log("\twrite failed!", e.toString());
+                        ConsoleLog.log(e.toString());
                     }
                 }).catch(err => {
                     if (err.statusCode == 304/*notModified*/) {
@@ -392,6 +392,7 @@ export class Main {
                     }
                     else {
                         console.log("!!!error!, statusCode: ", err);
+                        ConsoleLog.log(err.toString());
                     }
 
                 });
@@ -399,6 +400,7 @@ export class Main {
             }
             catch (e) {
                 console.log(chalk.red(e.toString()));
+                ConsoleLog.log(e.toString());
             }
 
 
