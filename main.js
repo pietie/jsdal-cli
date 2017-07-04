@@ -109,6 +109,7 @@ var Main = (function () {
                                 // TODO: update config from here
                                 console.info("RESP!!!", r.data);
                             });
+                            //this.processConfig(conf);
                             setInterval(function () {
                                 // TODO: setInterval is a bad idea
                                 _this.processConfig(conf);

@@ -88,12 +88,13 @@ export class Main {
                     console.info("RESP!!!", r.data);
                 });
 
+//this.processConfig(conf);
                 setInterval(() => {
                     // TODO: setInterval is a bad idea
                     this.processConfig(conf);
 
                 }, 2000);
-
+ 
 
             });
         }
