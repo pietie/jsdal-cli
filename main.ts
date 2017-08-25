@@ -9,7 +9,6 @@ import * as inquirer from 'inquirer';
 
 import * as clui from 'clui';
 
-import * as http from 'http';
 import * as path from 'path';
 import * as fs from 'fs';
 import * as crypto from 'crypto'
@@ -106,7 +105,6 @@ export class Main {
 
 
     private processConfig(conf: JsDALConfig) {
-//        ConsoleLog.log((new Date()).toISOString());
 
         ConsoleLog.output();
 

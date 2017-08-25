@@ -9,7 +9,9 @@ var __assign = (this && this.__assign) || Object.assign || function(t) {
 };
 Object.defineProperty(exports, "__esModule", { value: true });
 var http = require("http");
+var https = require("https");
 var URL = require("url");
+var console_logger_1 = require("./console-logger");
 var jsDALServerApi = (function () {
     function jsDALServerApi() {
     }
@@ -25,8 +27,9 @@ var jsDALServerApi = (function () {
                 method: method,
                 headers: __assign({ 'Content-Type': 'application/json' }, headers)
             };
-            //var prot = options.port == 443 ? https : http;
             var prot = http;
+            if (url.protocol.toLowerCase().startsWith("https"))
+                prot = https;
             var req = prot.request(options, function (res) {
                 var output = '';
                 var sc = res.statusCode;
@@ -42,8 +45,7 @@ var jsDALServerApi = (function () {
                         resolve({ data: obj, statusCode: sc, headers: res.headers });
                     }
                     catch (ex) {
-                        console.log("Failed to parse as JSON...");
-                        console.log(output);
+                        console_logger_1.ConsoleLog.log(serverUrl + " : Failed to parse response as JSON: " + output);
                     }
                 });
             });

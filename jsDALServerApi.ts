@@ -1,6 +1,8 @@
 import http = require("http");
+import https = require("https");
 import URL = require("url");
 import { JsDALProject, JsDALDbSource } from "jsdal-config";
+import { ConsoleLog } from './console-logger';
 
 export interface IApiResponse<T> {
     data: T;
@@ -24,8 +26,9 @@ export class jsDALServerApi {
                 }
             };
 
-            //var prot = options.port == 443 ? https : http;
-            let prot = http;
+            let prot: any = http;
+
+            if (url.protocol.toLowerCase().startsWith("https")) prot = https;
 
             let req = prot.request(options, (res) => {
                 let output = '';
@@ -47,8 +50,7 @@ export class jsDALServerApi {
 
                     }
                     catch (ex) {
-                        console.log("Failed to parse as JSON...");
-                        console.log(output);
+                        ConsoleLog.log(`${serverUrl} : Failed to parse response as JSON: ${output}`);
                     }
                 });
             });
@@ -129,7 +131,7 @@ export class jsDALServerApi {
     }
 
     public static DownloadCommonTypeScriptDefinitions(serverUrl: string) {
-        return jsDALServerApi.fetchFromApi(serverUrl, `/api/tsd/common`, 'GET', false).then(r=>r.data);
+        return jsDALServerApi.fetchFromApi(serverUrl, `/api/tsd/common`, 'GET', false).then(r => r.data);
     }
 
     /**

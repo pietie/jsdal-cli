@@ -9,6 +9,8 @@ export class ExpireByLogEntry {
 }
 
 export class ConsoleLog {
+    private static MAX_LENGTH: number = 20;
+
     private static projects: { [key: string]: JsDALConfig } = {};
     private static expireByLog: ExpireByLogEntry[] = [];
     private static mainLog: string[] = [];
@@ -32,10 +34,14 @@ export class ConsoleLog {
     }
 
     static log(line: string) {
-
-
         ConsoleLog.mainLog.splice(0, 0, chalk.grey('  [' + moment().format('HH:mm:ss') + '] ') + line);
 
+        if (ConsoleLog.mainLog.length > ConsoleLog.MAX_LENGTH) {
+
+            ConsoleLog.mainLog = ConsoleLog.mainLog.slice(0, ConsoleLog.MAX_LENGTH);
+            //ConsoleLog.mainLog.splice(ConsoleLog.mainLog.length - ConsoleLog.MAX_LENGTH + 1);
+
+        }
     }
 
     static output() {
@@ -62,7 +68,13 @@ export class ConsoleLog {
         Object.keys(ConsoleLog.projects).forEach(filePath => {
             let config = this.projects[filePath];
 
-            console.log(`\t${chalk.green(filePath)} (${chalk.bgWhite.blue(config.jsDALServerUrl)})\tSTATUS=TODO`);
+            let statusTxt: string = '(UNKNOWN)';
+
+            if (config.lastStatus) {
+                statusTxt = `${config.lastStatus.status} - ${config.lastStatus.lastChecked.fromNow()}`;
+            }
+
+            console.log(`\t${chalk.green(filePath)} (${chalk.bgWhite.blue(config.jsDALServerUrl)})\tSTATUS=${statusTxt}`);
         });
 
         if (ConsoleLog.expireByLog.length > 0) {
