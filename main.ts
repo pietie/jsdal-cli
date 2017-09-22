@@ -87,13 +87,13 @@ export class Main {
                     console.info("RESP!!!", r.data);
                 });
 
-//this.processConfig(conf);
+                //this.processConfig(conf);
                 setInterval(() => {
                     // TODO: setInterval is a bad idea
                     this.processConfig(conf);
 
                 }, 2000);
- 
+
 
             });
         }
@@ -206,102 +206,6 @@ export class Main {
 
             }).catch(e => console.log(e.toString()));
 
-
-            /*
-    
-    try
-                {
-                
-    
-                     // remove deleted files
-                    var toRemove = new List<JsFile>();
-    
-                    source.Files.ForEach(curFile =>
-                    {
-                        var match = outputFiles.FirstOrDefault(f => f.Guid.Equals(curFile.Guid));
-    
-                        if (match == null) // no match so file must have been removed
-                        {
-                            toRemove.Add(curFile);
-    
-                            var project = config.ProjectList.FirstOrDefault(p => p.Sources.Contains(source));
-                            var projectPath = new FileInfo(ConfigFilePath).Directory.FullName;
-                            var targetDir = Path.Combine(projectPath, this.Config.OutputPath, project.Name, source.Name);
-                            var targetFilePath = Path.Combine(targetDir, curFile.Filename);
-    
-                            // attempt to delete local files
-                            if (File.Exists(targetFilePath))
-                            {
-                                try
-                                {
-                                    File.Delete(targetFilePath);
-                                }
-                                catch (Exception ex)
-                                {
-                                    SessionLog.Exception(ex);
-                                }
-                            }
-    
-                            var tsdFilePath = Path.Combine(targetDir, curFile.Filename.Substring(0, curFile.Filename.LastIndexOf('.')) + ".d.ts");
-    
-                            if (File.Exists(tsdFilePath))
-                            {
-                                try
-                                {
-                                    File.Delete(tsdFilePath);
-                                }
-                                catch (Exception ex)
-                                {
-                                    SessionLog.Exception(ex);
-                                }
-    
-                            }
-    
-                            SessionLog.Info("r01: jsFile {0} ({1}) not found in DB Source {2} ({3}). Removing from project and deleting local file.", curFile.Filename, curFile.Guid, source.Name, source.Guid);
-                        }
-                    });
-    
-                    source.Files.RemoveAll(f=>toRemove.Contains(f));
-    
-                    var newFiles = new List<JsFile>();
-    
-                    outputFiles.ForEach(file =>
-                    {
-                        var match = source.Files.FirstOrDefault(f => f.Guid.Equals(file.Guid));
-    
-                        if (match == null) // no match so must be a new file
-                        {
-                            newFiles.Add(file);
-                        }
-                    });
-    
-                    source.Files.AddRange(newFiles);
-    
-                }
-                catch (Exception ee)
-                {
-                    if (ee.InnerException is WebException)
-                    {
-                        WebException we = (WebException)ee.InnerException;
-                        
-                        var buffer = new byte[we.Response.ContentLength];
-                        using (var s = we.Response.GetResponseStream())
-                        {
-                            s.Read(buffer, 0, buffer.Length);
-    
-                            var content = System.Text.Encoding.UTF8.GetString(buffer);
-    
-                            SessionLog.Error(content);
-                        }
-                    }
-                    else
-                    {
-                        SessionLog.Exception(ee, this.Config?.jsDALServerUrl, source.Guid);
-                    }
-                }
-    
-            */
-
         });
     }
 
@@ -326,7 +230,7 @@ export class Main {
                 }
 
                 // attempt to download a new version of the file
-                jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false, etag).then(r => {
+                jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false/*minified*/, etag).then(r => {
                     try {
                         jsFile.Version = r.version;
 
@@ -340,7 +244,7 @@ export class Main {
                             }
                         }
 
-                        fs.writeFileSync(targetFilePath, r.data, 'utf8');
+                        fs.writeFileSync(targetFilePath, r.data, { encoding: 'utf8' });
 
                         let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 20))}`;
                         ConsoleLog.log(prefix + chalk.green(`File written ${path.relative('./', targetFilePath)} (${r.data.length} bytes) and version ${r.version}`));
@@ -349,27 +253,28 @@ export class Main {
                         jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(r => {
                             if (r.data) {
                                 let tsdFilePath = path.join(targetDir, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
-                                fs.writeFileSync(tsdFilePath, r.data, 'utf8');
+                                fs.writeFileSync(tsdFilePath, r.data, { encoding: 'utf8' });
                                 ConsoleLog.log(prefix + chalk.green(`File written ${path.relative('./', tsdFilePath)} (${r.data.length} bytes)`));
                             }
 
                         });
 
-
                         let tsdCommonFilePath = path.join(targetDir, "jsDAL.common.d.ts");
 
-                        if (!fs.existsSync(tsdCommonFilePath) || fs.statSync(tsdCommonFilePath).size == 0) {
-                            jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then((tsdCommon: string) => {
+                        if (dbSource.Options.IncludeCommonTsd) {
+                            if (!fs.existsSync(tsdCommonFilePath) || fs.statSync(tsdCommonFilePath).size == 0) {
+                                jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then((tsdCommon: string) => {
 
-                                fs.writeFileSync(tsdCommonFilePath, tsdCommon, 'utf8');
+                                    fs.writeFileSync(tsdCommonFilePath, tsdCommon, { encoding: 'utf8' });
 
-                                ConsoleLog.log(prefix + `Output file written: \"${path.parse(tsdCommonFilePath).name}\" (${tsdCommon.length} bytes)`);
-                                
-                            });
+                                    ConsoleLog.log(prefix + `Output file written: \"${path.parse(tsdCommonFilePath).name}${path.parse(tsdCommonFilePath).ext}\" (${tsdCommon.length} bytes)`);
+                                });
+                            }
                         }
-
-
-
+                        else {
+                            // the main script's d.ts will still have a reference to the common TSD so let's give it a file, just an empty one
+                            fs.writeFileSync(tsdCommonFilePath, `// TSD excluded on DataSource options`, { encoding: 'utf8' });
+                        }
                     }
                     catch (e) {
                         console.log("\twrite failed!", e.toString());

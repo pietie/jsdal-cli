@@ -3,7 +3,7 @@ import * as chalk from 'chalk';
 import { JsDALFile } from './JsDALFile'
 import { ISerializable } from '../ISerializable'
 
-import { Util  } from '../Util'
+import { Util } from '../Util'
 import { ConsoleLog } from "./../console-logger";
 
 
@@ -11,10 +11,13 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
     Name: string;
     Guid: string;
     JsFiles: JsDALFile[];
+    Options: JsDALDbSourceOptions;
 
     deserialize(src: JsDALDbSource) {
         this.Name = src.Name;
         this.Guid = src.Guid;
+        this.Options = new JsDALDbSourceOptions();
+        this.Options.deserialize(src.Options);
         this.JsFiles = [];
 
         if (src.JsFiles) {
@@ -54,8 +57,8 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
         if (!newFiles) return;
         if (!this.JsFiles) this.JsFiles = [];
 
-        let dbSourceName: string = "\t" 
-                + chalk.bgCyan.black(Util.padRight(dbSource.Name, 20));
+        let dbSourceName: string = "\t"
+            + chalk.bgCyan.black(Util.padRight(dbSource.Name, 20));
 
         let curCnt = this.JsFiles.length;
         let curFiles = this.JsFiles.map(e => e.Filename).join(",");
@@ -88,4 +91,21 @@ export class JsDALDbSource implements ISerializable<JsDALDbSource> {
 
         this.JsFiles = this.JsFiles.concat(newFiles);
     }
+}
+
+export class JsDALDbSourceOptions implements ISerializable<JsDALDbSourceOptions>
+{
+    IncludeCommonTsd:boolean;
+
+    constructor()
+    {
+        this.IncludeCommonTsd = true;
+    }
+
+    deserialize(src: JsDALDbSourceOptions): JsDALDbSourceOptions {
+        if (!src) return;
+
+        this.IncludeCommonTsd = src.IncludeCommonTsd;
+    }
+
 }

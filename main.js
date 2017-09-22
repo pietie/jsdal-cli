@@ -126,7 +126,6 @@ var Main = (function () {
         });
     };
     Main.prototype.processConfig = function (conf) {
-        //        ConsoleLog.log((new Date()).toISOString());
         var _this = this;
         console_logger_1.ConsoleLog.output();
         async.forEach(conf.ProjectList, function (project) { return __awaiter(_this, void 0, void 0, function () {
@@ -237,7 +236,7 @@ var Main = (function () {
                     etag = '"' + md5.digest('hex') + '"';
                 }
                 // attempt to download a new version of the file
-                jsDALServerApi_1.jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false, etag).then(function (r) {
+                jsDALServerApi_1.jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false /*minified*/, etag).then(function (r) {
                     try {
                         jsFile.Version = r.version;
                         if (!fs.existsSync(targetDir_1)) {
@@ -248,23 +247,29 @@ var Main = (function () {
                                 console.log(chalk.red(e.toString()));
                             }
                         }
-                        fs.writeFileSync(targetFilePath_1, r.data, 'utf8');
+                        fs.writeFileSync(targetFilePath_1, r.data, { encoding: 'utf8' });
                         var prefix_1 = "" + chalk.bgCyan.black(util_1.Util.padRight(dbSource.Name, 20));
                         console_logger_1.ConsoleLog.log(prefix_1 + chalk.green("File written " + path.relative('./', targetFilePath_1) + " (" + r.data.length + " bytes) and version " + r.version));
                         // TODO: move into separate function?
                         jsDALServerApi_1.jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(function (r) {
                             if (r.data) {
                                 var tsdFilePath = path.join(targetDir_1, jsFile.Filename.substr(0, jsFile.Filename.lastIndexOf('.')) + '.d.ts');
-                                fs.writeFileSync(tsdFilePath, r.data, 'utf8');
+                                fs.writeFileSync(tsdFilePath, r.data, { encoding: 'utf8' });
                                 console_logger_1.ConsoleLog.log(prefix_1 + chalk.green("File written " + path.relative('./', tsdFilePath) + " (" + r.data.length + " bytes)"));
                             }
                         });
                         var tsdCommonFilePath_1 = path.join(targetDir_1, "jsDAL.common.d.ts");
-                        if (!fs.existsSync(tsdCommonFilePath_1) || fs.statSync(tsdCommonFilePath_1).size == 0) {
-                            jsDALServerApi_1.jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then(function (tsdCommon) {
-                                fs.writeFileSync(tsdCommonFilePath_1, tsdCommon, 'utf8');
-                                console_logger_1.ConsoleLog.log(prefix_1 + ("Output file written: \"" + path.parse(tsdCommonFilePath_1).name + "\" (" + tsdCommon.length + " bytes)"));
-                            });
+                        if (dbSource.Options.IncludeCommonTsd) {
+                            if (!fs.existsSync(tsdCommonFilePath_1) || fs.statSync(tsdCommonFilePath_1).size == 0) {
+                                jsDALServerApi_1.jsDALServerApi.DownloadCommonTypeScriptDefinitions(config.jsDALServerUrl).then(function (tsdCommon) {
+                                    fs.writeFileSync(tsdCommonFilePath_1, tsdCommon, { encoding: 'utf8' });
+                                    console_logger_1.ConsoleLog.log(prefix_1 + ("Output file written: \"" + path.parse(tsdCommonFilePath_1).name + path.parse(tsdCommonFilePath_1).ext + "\" (" + tsdCommon.length + " bytes)"));
+                                });
+                            }
+                        }
+                        else {
+                            // the main script's d.ts will still have a reference to the common TSD so let's give it a file, just an empty one
+                            fs.writeFileSync(tsdCommonFilePath_1, "// TSD excluded on DataSource options", { encoding: 'utf8' });
                         }
                     }
                     catch (e) {

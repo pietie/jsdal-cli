@@ -10,6 +10,8 @@ var JsDALDbSource = (function () {
     JsDALDbSource.prototype.deserialize = function (src) {
         this.Name = src.Name;
         this.Guid = src.Guid;
+        this.Options = new JsDALDbSourceOptions();
+        this.Options.deserialize(src.Options);
         this.JsFiles = [];
         if (src.JsFiles) {
             this.JsFiles = src.JsFiles.map(function (f) {
@@ -65,4 +67,16 @@ var JsDALDbSource = (function () {
     return JsDALDbSource;
 }());
 exports.JsDALDbSource = JsDALDbSource;
+var JsDALDbSourceOptions = (function () {
+    function JsDALDbSourceOptions() {
+        this.IncludeCommonTsd = true;
+    }
+    JsDALDbSourceOptions.prototype.deserialize = function (src) {
+        if (!src)
+            return;
+        this.IncludeCommonTsd = src.IncludeCommonTsd;
+    };
+    return JsDALDbSourceOptions;
+}());
+exports.JsDALDbSourceOptions = JsDALDbSourceOptions;
 //# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALDbSource.js.map

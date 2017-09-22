@@ -19,4 +19,10 @@ var JsDALConfig = (function () {
     return JsDALConfig;
 }());
 exports.JsDALConfig = JsDALConfig;
+var jsDALServerStatus = (function () {
+    function jsDALServerStatus() {
+    }
+    return jsDALServerStatus;
+}());
+exports.jsDALServerStatus = jsDALServerStatus;
 //# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALConfig.js.map
