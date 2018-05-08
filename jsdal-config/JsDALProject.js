@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var JsDALDbSource_1 = require("./JsDALDbSource");
 var Util_1 = require("../Util");
 var console_logger_1 = require("./../console-logger");
-var JsDALProject = (function () {
+var JsDALProject = /** @class */ (function () {
     function JsDALProject() {
     }
     JsDALProject.prototype.deserialize = function (src) {
@@ -52,4 +52,4 @@ var JsDALProject = (function () {
     return JsDALProject;
 }());
 exports.JsDALProject = JsDALProject;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALProject.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALProject.js.map

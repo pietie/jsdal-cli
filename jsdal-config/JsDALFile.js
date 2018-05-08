@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var JsDALFile = (function () {
+var JsDALFile = /** @class */ (function () {
     function JsDALFile() {
     }
     JsDALFile.prototype.deserialize = function (src) {
@@ -16,4 +16,4 @@ var JsDALFile = (function () {
     return JsDALFile;
 }());
 exports.JsDALFile = JsDALFile;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALFile.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALFile.js.map

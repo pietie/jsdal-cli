@@ -4,7 +4,7 @@ var chalk = require("chalk");
 var JsDALFile_1 = require("./JsDALFile");
 var Util_1 = require("../Util");
 var console_logger_1 = require("./../console-logger");
-var JsDALDbSource = (function () {
+var JsDALDbSource = /** @class */ (function () {
     function JsDALDbSource() {
     }
     JsDALDbSource.prototype.deserialize = function (src) {
@@ -67,7 +67,7 @@ var JsDALDbSource = (function () {
     return JsDALDbSource;
 }());
 exports.JsDALDbSource = JsDALDbSource;
-var JsDALDbSourceOptions = (function () {
+var JsDALDbSourceOptions = /** @class */ (function () {
     function JsDALDbSourceOptions() {
         this.IncludeCommonTsd = true;
     }
@@ -79,4 +79,4 @@ var JsDALDbSourceOptions = (function () {
     return JsDALDbSourceOptions;
 }());
 exports.JsDALDbSourceOptions = JsDALDbSourceOptions;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALDbSource.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsdal-config/JsDALDbSource.js.map

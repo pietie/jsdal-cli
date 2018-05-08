@@ -12,7 +12,7 @@ var http = require("http");
 var https = require("https");
 var URL = require("url");
 var console_logger_1 = require("./console-logger");
-var jsDALServerApi = (function () {
+var jsDALServerApi = /** @class */ (function () {
     function jsDALServerApi() {
     }
     jsDALServerApi.fetchFromApi = function (serverUrl, apiPath, method, autoParseJson, headers) {
@@ -22,6 +22,7 @@ var jsDALServerApi = (function () {
             var url = URL.parse(serverUrl);
             var options = {
                 host: url.hostname,
+                "rejectUnauthorized": false,
                 port: parseInt(url.port),
                 path: apiPath,
                 method: method,
@@ -108,4 +109,4 @@ var jsDALServerApi = (function () {
     return jsDALServerApi;
 }());
 exports.jsDALServerApi = jsDALServerApi;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsDALServerApi.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/jsDALServerApi.js.map

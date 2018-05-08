@@ -45,7 +45,7 @@ export class ConsoleLog {
     }
 
     static output() {
-        //!console.log(`\t${chalk.green(filePath)} (${chalk.bgWhite.blue(config.jsDALServerUrl)})`);
+
         ConsoleLog.clearScreen();
 
         // clean-up expireByLog

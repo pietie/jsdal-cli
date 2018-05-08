@@ -15,8 +15,9 @@ export class jsDALServerApi {
         return new Promise<any>((resolve, reject) => {
             let url = URL.parse(serverUrl);
 
-            let options: http.RequestOptions = {
+            let options: any/*http.RequestOptions*/ = {
                 host: url.hostname,
+                "rejectUnauthorized": false, // TODO: Fix cert chain so this is not necessary!
                 port: parseInt(url.port),
                 path: apiPath,
                 method: method,

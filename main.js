@@ -45,7 +45,7 @@ var async = require("async");
 var chalk = require("chalk");
 var shelljs = require("shelljs");
 var util_1 = require("./util");
-var Main = (function () {
+var Main = /** @class */ (function () {
     function Main() {
     }
     Main.init = function () {
@@ -107,7 +107,7 @@ var Main = (function () {
                         async.forEach(this.configs, function (conf) {
                             jsDALServerApi_1.jsDALServerApi.getProjects(conf.jsDALServerUrl).then(function (r) {
                                 // TODO: update config from here
-                                console.info("RESP!!!", r.data);
+                                console.info("RESPONSE: ", r.data);
                             });
                             //this.processConfig(conf);
                             setInterval(function () {
@@ -235,6 +235,8 @@ var Main = (function () {
                     md5.update(fileData);
                     etag = '"' + md5.digest('hex') + '"';
                 }
+                var prefix_1 = null;
+                prefix_1 = "" + chalk.bgCyan.black(util_1.Util.padRight(dbSource.Name, 20));
                 // attempt to download a new version of the file
                 jsDALServerApi_1.jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false /*minified*/, etag).then(function (r) {
                     try {
@@ -248,7 +250,6 @@ var Main = (function () {
                             }
                         }
                         fs.writeFileSync(targetFilePath_1, r.data, { encoding: 'utf8' });
-                        var prefix_1 = "" + chalk.bgCyan.black(util_1.Util.padRight(dbSource.Name, 20));
                         console_logger_1.ConsoleLog.log(prefix_1 + chalk.green("File written " + path.relative('./', targetFilePath_1) + " (" + r.data.length + " bytes) and version " + r.version));
                         // TODO: move into separate function?
                         jsDALServerApi_1.jsDALServerApi.DownloadTypeScriptDefinition(config.jsDALServerUrl, jsFile.Guid).then(function (r) {
@@ -286,7 +287,7 @@ var Main = (function () {
                         return;
                     }
                     else if (err.statusCode == 412 /*PreconditionFailed*/) {
-                        console.log(err);
+                        console_logger_1.ConsoleLog.log(prefix_1 + ' ' + jsFile.Filename + " - " + err.data);
                         return;
                     }
                     else {
@@ -354,4 +355,4 @@ var Main = (function () {
     return Main;
 }());
 exports.Main = Main;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/main.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/main.js.map

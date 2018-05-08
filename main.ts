@@ -84,7 +84,7 @@ export class Main {
 
                 jsDALServerApi.getProjects(conf.jsDALServerUrl).then(r => {
                     // TODO: update config from here
-                    console.info("RESP!!!", r.data);
+                    console.info("RESPONSE: ", r.data);
                 });
 
                 //this.processConfig(conf);
@@ -229,8 +229,13 @@ export class Main {
                     etag = '"' + md5.digest('hex') + '"';
                 }
 
+                let prefix: string = null;
+
+                prefix  = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 20))}`;
+
                 // attempt to download a new version of the file
                 jsDALServerApi.DownloadJsFile(config.jsDALServerUrl, jsFile.Guid, version, false/*minified*/, etag).then(r => {
+                    
                     try {
                         jsFile.Version = r.version;
 
@@ -246,7 +251,7 @@ export class Main {
 
                         fs.writeFileSync(targetFilePath, r.data, { encoding: 'utf8' });
 
-                        let prefix: string = `${chalk.bgCyan.black(Util.padRight(dbSource.Name, 20))}`;
+
                         ConsoleLog.log(prefix + chalk.green(`File written ${path.relative('./', targetFilePath)} (${r.data.length} bytes) and version ${r.version}`));
 
                         // TODO: move into separate function?
@@ -291,7 +296,7 @@ export class Main {
                         return;
                     }
                     else if (err.statusCode == 412/*PreconditionFailed*/) {
-                        console.log(err);
+                        ConsoleLog.log(prefix + ' ' + jsFile.Filename + " - " + err.data);
                         return;
                     }
                     else {

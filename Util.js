@@ -1,6 +1,6 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-var Util = (function () {
+var Util = /** @class */ (function () {
     function Util() {
     }
     Util.padRight = function (input, maxLength, padChar) {
@@ -14,4 +14,4 @@ var Util = (function () {
     return Util;
 }());
 exports.Util = Util;
-//# sourceMappingURL=f:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/Util.js.map
+//# sourceMappingURL=F:/00-Work/Projects/jsDALEditor/jsDAL-CLI/jsdal-cli/Util.js.map
